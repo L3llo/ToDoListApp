@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="todolistapp.client/todolistapp.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="ToDoListApp.Server/ToDoListApp.Server.csproj" />
+</Solution>
