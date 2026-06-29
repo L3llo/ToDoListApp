@@ -30,7 +30,7 @@ Content-Type: application/json
 {
   "title": "Task aggiornato",
   "description": "Descrizione aggiornata",
-  "state": "InProgress"
+  "state": "Open"
 }
 
 ###

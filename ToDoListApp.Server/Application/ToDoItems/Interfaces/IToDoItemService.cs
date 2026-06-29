@@ -4,10 +4,10 @@ namespace ToDoListApp.Server.Application.ToDoItems.Interfaces
 {
     public interface IToDoItemService
     {
-        Task<IEnumerable<ToDoItemDto>> GetAllAsync();
-        Task<ToDoItemDto?> GetByIdAsync(int id);
-        Task<ToDoItemDto> CreateAsync(CreateToDoItemDto dto);
-        Task<ToDoItemDto> UpdateAsync(int id, UpdateToDoItemDto dto);
-        Task DeleteAsync(int id);
+        Task<IEnumerable<ToDoItemDto>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<ToDoItemDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default);
+        Task<ToDoItemDto> CreateAsync(CreateToDoItemDto dto, CancellationToken cancellationToken = default);
+        Task<ToDoItemDto> UpdateAsync(int id, UpdateToDoItemDto dto, CancellationToken cancellationToken = default);
+        Task DeleteAsync(int id, CancellationToken cancellationToken = default);
     }
 }

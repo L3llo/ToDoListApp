@@ -1,14 +1,18 @@
 using Scalar.AspNetCore;
-using ToDoListApp.Server.Application.ToDoItems;
-using ToDoListApp.Server.Application.ToDoItems.Interfaces;
+using System.Text.Json.Serialization;
 using ToDoListApp.Server.Infrastructure;
-using ToDoListApp.Server.Infrastructure.Persistence;
+using ToDoListApp.Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
+
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 builder.Services.AddOpenApi();
 builder.Services.AddInfrastructure(builder.Configuration, builder.Environment);
 
@@ -22,6 +26,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 app.UseDefaultFiles();
 app.MapStaticAssets();
