@@ -1,4 +1,4 @@
-export type ToDoItemState = 'Open' | 'Completed';  
+export type ToDoItemState = 'Open' | 'Completed';
 
 export interface ToDoItemFormData {
     title: string;

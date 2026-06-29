@@ -8,9 +8,13 @@ interface ToDoItemListProps {
     onDelete: (id: number) => void;
 }
 
-function ToDoItemList({ items, onToggle, onEdit, onDelete }: ToDoItemListProps ){
+function ToDoItemList({ items, onToggle, onEdit, onDelete }: ToDoItemListProps) {
+    if (items.length === 0) {
+        return <p className="todo-list__empty">Nessuna attività. Creane una!</p>;
+    }
+
     return (
-        <div>
+        <div className="todo-list">
             {items.map(item => (
                 <ToDoSingleItem
                     key={item.id}
@@ -24,4 +28,4 @@ function ToDoItemList({ items, onToggle, onEdit, onDelete }: ToDoItemListProps )
     );
 }
 
-export { ToDoItemList }
+export { ToDoItemList };

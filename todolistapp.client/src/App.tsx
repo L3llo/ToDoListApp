@@ -18,25 +18,28 @@ function App() {
         setSelectedItem(undefined);
     }
 
+    function handleToggle(id: number) {
+        const item = toDoItems.find(t => t.id === id);
+        if (item) handleUpdate(id, {
+            title: item.title,
+            description: item.description,
+            state: item.state === 'Open' ? 'Completed' : 'Open'
+        });
+    }
+
     return (
         <div className="app">
-            <h1>ToDo App</h1>
-
-            <button onClick={() => setSelectedItem(null)}>+ Nuova attività</button>
+            <div className="app__header">
+                <h1>ToDo App</h1>
+                <button className="btn btn--primary" onClick={() => setSelectedItem(null)}>+ Nuova attività</button>
+            </div>
 
             {isLoading && <p>Caricamento...</p>}
             {error && <p>Errore: {error.message}</p>}
 
             <ToDoItemList
                 items={toDoItems}
-                onToggle={id => {
-                    const item = toDoItems.find(t => t.id === id);
-                    if (item) handleUpdate(id, {
-                        title: item.title,
-                        description: item.description,
-                        state: item.state === 'Open' ? 'Completed' : 'Open'
-                    });
-                }}
+                onToggle={handleToggle}
                 onEdit={item => setSelectedItem(item)}
                 onDelete={handleRemove}
             />
