@@ -40,7 +40,7 @@ jobs:
         run: |
           mkdir -p _site
           cp docs/index.html _site/index.html
-          cp ToDoListApp.Server/v1.json _site/openapi.json
+          cp ToDoListApp.Server/ToDoListApp.Server.json _site/openapi.json
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
