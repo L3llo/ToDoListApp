@@ -366,3 +366,6 @@ FodyWeavers.xsd
 appsettings.Production.json
 appsettings.*.local.json
 secrets.json
+
+# OpenAPI spec generata a build time
+ToDoListApp.Server/ToDoListApp.Server.json
