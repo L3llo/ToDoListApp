@@ -1,4 +1,5 @@
-﻿using ToDoListApp.Server.Application.ToDoItems.DTOs;
+﻿using ToDoListApp.Server.Application.Common.Exceptions;
+using ToDoListApp.Server.Application.ToDoItems.DTOs;
 using ToDoListApp.Server.Application.ToDoItems.Interfaces;
 using ToDoListApp.Server.Domain.ToDoItem;
 
@@ -8,7 +9,7 @@ namespace ToDoListApp.Server.Application.ToDoItems
     {
         private readonly IToDoItemRepository _repository = repository;
 
-        public async Task<ToDoItemDto> CreateAsync(CreateToDoItemDto dto)
+        public async Task<ToDoItemDto> CreateAsync(CreateToDoItemDto dto, CancellationToken cancellationToken = default)
         {
             var item = new ToDoItem
             {
@@ -16,46 +17,42 @@ namespace ToDoListApp.Server.Application.ToDoItems
                 Description = dto.Description
             };
 
-            var created = await _repository.AddAsync(item);
+            var created = await _repository.AddAsync(item, cancellationToken);
             return MapToDto(created);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
-            _ = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"ToDoItem by id {id} not found.");
-            await _repository.DeleteAsync(id);
+            _ = await _repository.GetByIdAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"ToDoItem by id {id} not found.");
+            await _repository.DeleteAsync(id, cancellationToken);
         }
 
-        public async Task<IEnumerable<ToDoItemDto>> GetAllAsync()
+        public async Task<IEnumerable<ToDoItemDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var items = await _repository.GetAllAsync();
+            var items = await _repository.GetAllAsync(cancellationToken);
             return items.Select(MapToDto);
         }
 
-        public async Task<ToDoItemDto?> GetByIdAsync(int id)
+        public async Task<ToDoItemDto?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            var item = await _repository.GetByIdAsync(id);
+            var item = await _repository.GetByIdAsync(id, cancellationToken);
             return item is null ? null : MapToDto(item);
         }
 
-        public async Task<ToDoItemDto> UpdateAsync(int id, UpdateToDoItemDto dto)
+        public async Task<ToDoItemDto> UpdateAsync(int id, UpdateToDoItemDto dto, CancellationToken cancellationToken = default)
         {
-            var item = await _repository.GetByIdAsync(id)
-                ?? throw new KeyNotFoundException($"ToDoItem by id {id} not found.");
+            var item = await _repository.GetByIdAsync(id, cancellationToken)
+                ?? throw new NotFoundException($"ToDoItem by id {id} not found.");
 
             item.Title = dto.Title;
             item.Description = dto.Description;
-            if (Enum.TryParse<ToDoItemState>(dto.State, out var state))
-            {
-                item.State = state;
-                if (state == ToDoItemState.Completed && item.CompletedAt is null)
-                    item.CompletedAt = DateTime.UtcNow;
-                else if (state == ToDoItemState.Open)
-                    item.CompletedAt = null;
-            }
+            if (dto.State == ToDoItemState.Completed)
+                item.MarkCompleted();
+            else
+                item.Reopen();
 
-            var updated = await _repository.UpdateAsync(item);
+            var updated = await _repository.UpdateAsync(item, cancellationToken);
             return MapToDto(updated);
         }
 
@@ -64,7 +61,7 @@ namespace ToDoListApp.Server.Application.ToDoItems
             Id = item.Id,
             Title = item.Title,
             Description = item.Description,
-            State = item.State.ToString(),
+            State = item.State,
             CreatedAt = item.CreatedAt,
             CompletedAt = item.CompletedAt
         };

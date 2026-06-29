@@ -8,37 +8,37 @@ namespace ToDoListApp.Server.Infrastructure.Persistence.Repositories
     {
         private readonly AppDbContext _context = context;
 
-        public async Task<ToDoItem> AddAsync(ToDoItem item)
+        public async Task<ToDoItem> AddAsync(ToDoItem item, CancellationToken cancellationToken = default)
         {
             _context.ToDoItems.Add(item);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return item;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(int id, CancellationToken cancellationToken = default)
         {
-            var item = await _context.ToDoItems.FindAsync(id);
+            var item = await _context.ToDoItems.FindAsync([id], cancellationToken);
             if (item is not null)
             {
                 _context.ToDoItems.Remove(item);
-                await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync(cancellationToken);
             }
         }
 
-        public async Task<IEnumerable<ToDoItem>> GetAllAsync()
+        public async Task<IEnumerable<ToDoItem>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _context.ToDoItems.ToListAsync();
+            return await _context.ToDoItems.ToListAsync(cancellationToken);
         }
 
-        public async Task<ToDoItem?> GetByIdAsync(int id)
+        public async Task<ToDoItem?> GetByIdAsync(int id, CancellationToken cancellationToken = default)
         {
-            return await _context.ToDoItems.FindAsync(id);
+            return await _context.ToDoItems.FindAsync([id], cancellationToken);
         }
 
-        public async Task<ToDoItem> UpdateAsync(ToDoItem item)
+        public async Task<ToDoItem> UpdateAsync(ToDoItem item, CancellationToken cancellationToken = default)
         {
             _context.ToDoItems.Update(item);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
             return item;
         }
     }

@@ -11,54 +11,40 @@ namespace ToDoListApp.Server.Controllers
         private readonly IToDoItemService _service = service;
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ToDoItemDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ToDoItemDto>>> GetAll(CancellationToken cancellationToken)
         {
-            var items = await _service.GetAllAsync();
+            var items = await _service.GetAllAsync(cancellationToken);
             return Ok(items);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<ToDoItemDto>> GetById(int id)
+        public async Task<ActionResult<ToDoItemDto>> GetById(int id, CancellationToken cancellationToken)
         {
-            var item = await _service.GetByIdAsync(id);
+            var item = await _service.GetByIdAsync(id, cancellationToken);
             if (item is null)
                 return NotFound();
             return Ok(item);
         }
 
         [HttpPost]
-        public async Task<ActionResult<ToDoItemDto>> Create(CreateToDoItemDto dto)
+        public async Task<ActionResult<ToDoItemDto>> Create(CreateToDoItemDto dto, CancellationToken cancellationToken)
         {
-            var created = await _service.CreateAsync(dto);
+            var created = await _service.CreateAsync(dto, cancellationToken);
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<ToDoItemDto>> Update(int id, UpdateToDoItemDto dto)
+        public async Task<ActionResult<ToDoItemDto>> Update(int id, UpdateToDoItemDto dto, CancellationToken cancellationToken)
         {
-            try
-            {
-                var updated = await _service.UpdateAsync(id, dto);
-                return Ok(updated);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
+            var updated = await _service.UpdateAsync(id, dto, cancellationToken);
+            return Ok(updated);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id, CancellationToken cancellationToken)
         {
-            try
-            {
-                await _service.DeleteAsync(id);
-                return NoContent();
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound();
-            }
+            await _service.DeleteAsync(id, cancellationToken);
+            return NoContent();
         }
     }
 }
