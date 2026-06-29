@@ -18,24 +18,32 @@ function ToDoItemForm({ item, onSave, onClose }: ToDoItemFormProps) {
     }
 
     return (
-        <div>
-            <h2>{item ? 'Modifica attività' : 'Nuova attività'}</h2>
+        <div className="modal-overlay" onClick={onClose}>
+            <div className="modal" onClick={e => e.stopPropagation()}>
+                <h2>{item ? 'Modifica attività' : 'Nuova attività'}</h2>
 
-            <input
-                type="text"
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                placeholder="Titolo"
-            />
+                <input
+                    className="form-input"
+                    type="text"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    placeholder="Titolo"
+                    maxLength={200}
+                />
 
-            <textarea
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                placeholder="Descrizione (opzionale)"
-            />
+                <textarea
+                    className="form-textarea"
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                    placeholder="Descrizione (opzionale)"
+                    maxLength={1000}
+                />
 
-            <button onClick={handleSubmit}>Salva</button>
-            <button onClick={onClose}>Annulla</button>
+                <div className="modal__actions">
+                    <button className="btn btn--primary" onClick={handleSubmit}>Salva</button>
+                    <button className="btn" onClick={onClose}>Annulla</button>
+                </div>
+            </div>
         </div>
     );
 }
