@@ -3,6 +3,8 @@ name: Deploy API Documentation
 on:
   push:
     branches: [master]
+    paths:
+      - 'ToDoListApp.Server/**'
 
 permissions:
   contents: read
