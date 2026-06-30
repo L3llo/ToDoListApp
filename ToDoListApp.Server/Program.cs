@@ -1,6 +1,8 @@
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 using System.Text.Json.Serialization;
 using ToDoListApp.Server.Infrastructure;
+using ToDoListApp.Server.Infrastructure.Persistence;
 using ToDoListApp.Server.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +39,12 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
     app.MapScalarApiReference();
+}
+
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
 }
 
 app.UseHttpsRedirection();
