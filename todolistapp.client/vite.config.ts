@@ -41,6 +41,9 @@ export default defineConfig(({ command }) => {
 
     return {
         plugins: [plugin()],
+        build: {
+            outDir: 'build'
+        },
         resolve: {
             alias: {
                 '@': fileURLToPath(new URL('./src', import.meta.url))
