@@ -1,9 +1,8 @@
 import axios from "axios";
 import type { CreateToDoItemRequest, ToDoItem, UpdateToDoItemRequest } from "../types/toDoItem";
 
-const apiClient = axios.create({
-    baseURL: '/api'
-});
+const apiClient = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api' });
+
 
 async function getAll(): Promise<ToDoItem[]> {
     const response = await apiClient.get<ToDoItem[]>('/ToDoItems');
