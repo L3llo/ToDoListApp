@@ -38,24 +38,44 @@ const target = env.ASPNETCORE_HTTPS_PORT ? `https://localhost:${env.ASPNETCORE_H
     env.ASPNETCORE_URLS ? env.ASPNETCORE_URLS.split(';')[0] : 'https://localhost:7117';
 
 // https://vitejs.dev/config/
-export default defineConfig({
-    plugins: [plugin()],
-    resolve: {
-        alias: {
-            '@': fileURLToPath(new URL('./src', import.meta.url))
+export default defineConfig(({ command }) => {
+    const isDev = command === 'serve';
+
+    if (isDev) {
+        if (!fs.existsSync(baseFolder)) {
+            fs.mkdirSync(baseFolder, { recursive: true });
         }
-    },
-    server: {
-        proxy: {
-            '^/api': {
-                target,
-                secure: false
+        if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
+            if (0 !== child_process.spawnSync('dotnet', [
+                'dev-certs', 'https',
+                '--export-path', certFilePath,
+                '--format', 'Pem',
+                '--no-password',
+            ], { stdio: 'inherit' }).status) {
+                throw new Error("Could not create certificate.");
             }
-        },
-        port: parseInt(env.DEV_SERVER_PORT || '64364'),
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
         }
     }
-})
+
+    return {
+        plugins: [plugin()],
+        resolve: {
+            alias: {
+                '@': fileURLToPath(new URL('./src', import.meta.url))
+            }
+        },
+        server: isDev ? {
+            proxy: {
+                '^/api': {
+                    target,
+                    secure: false
+                }
+            },
+            port: parseInt(env.DEV_SERVER_PORT || '64364'),
+            https: {
+                key: fs.readFileSync(keyFilePath),
+                cert: fs.readFileSync(certFilePath),
+            }
+        } : undefined
+    };
+});
