@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { useToDoItems } from './hooks/useToDoItems';
 import { ToDoItemList } from './components/ToDoItemList';
 import { ToDoItemForm } from './components/ToDoItemForm';
+import { ProgressBar } from './components/ProgressBar';
 import type { ToDoItem, ToDoItemFormData } from './types/toDoItem';
 import './App.css';
 
 function App() {
-    const { toDoItems, isLoading, error, handleCreate, handleUpdate, handleRemove } = useToDoItems();
+    const { toDoItems, isInitialLoading, isLoading, error, handleCreate, handleUpdate, handleRemove } = useToDoItems();
+    // Tri-state: undefined = form closed, null = creating a new item, ToDoItem = editing that item.
     const [selectedItem, setSelectedItem] = useState<ToDoItem | null | undefined>(undefined);
 
     async function handleSave(data: ToDoItemFormData) {
@@ -34,15 +36,23 @@ function App() {
                 <button className="btn btn--primary" onClick={() => setSelectedItem(null)}>+ Nuova attività</button>
             </div>
 
-            {isLoading && <p>Caricamento...</p>}
-            {error && <p>Errore: {error.message}</p>}
+            {isInitialLoading ? (
+                <ProgressBar label="Sto svegliando il server, potrebbe richiedere qualche secondo..." />
+            ) : (
+                <>
+                    {isLoading && <ProgressBar compact />}
+                    {error && <p className="app__error">Errore: {error.message}</p>}
 
-            <ToDoItemList
-                items={toDoItems}
-                onToggle={handleToggle}
-                onEdit={item => setSelectedItem(item)}
-                onDelete={handleRemove}
-            />
+                    {!error && (
+                        <ToDoItemList
+                            items={toDoItems}
+                            onToggle={handleToggle}
+                            onEdit={item => setSelectedItem(item)}
+                            onDelete={handleRemove}
+                        />
+                    )}
+                </>
+            )}
 
             {selectedItem !== undefined && (
                 <ToDoItemForm
