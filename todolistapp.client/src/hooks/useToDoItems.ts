@@ -4,6 +4,8 @@ import type { CreateToDoItemRequest, ToDoItem, UpdateToDoItemRequest } from "../
 import { getAll, create, update, remove } from "../services/toDoItemService";
 
 function toFriendlyError(err: unknown): Error {
+    // 503 here is the backend's GlobalExceptionHandler mapping RetryLimitExceededException
+    // to a transient error during the Azure SQL free-tier cold start.
     if (axios.isAxiosError(err) && err.response?.status === 503) {
         return new Error("Il server si sta riattivando dopo un periodo di inattività: riprova tra qualche secondo.");
     }

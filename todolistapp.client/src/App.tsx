@@ -8,6 +8,7 @@ import './App.css';
 
 function App() {
     const { toDoItems, isInitialLoading, isLoading, error, handleCreate, handleUpdate, handleRemove } = useToDoItems();
+    // Tri-state: undefined = form closed, null = creating a new item, ToDoItem = editing that item.
     const [selectedItem, setSelectedItem] = useState<ToDoItem | null | undefined>(undefined);
 
     async function handleSave(data: ToDoItemFormData) {

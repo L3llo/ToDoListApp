@@ -1,6 +1,8 @@
 import axios from "axios";
 import type { CreateToDoItemRequest, ToDoItem, UpdateToDoItemRequest } from "../types/toDoItem";
 
+// In dev, falls back to '/api' and relies on the Vite proxy; in production VITE_API_BASE_URL
+// is injected at build time with the real API URL (no proxy available on static hosting).
 const apiClient = axios.create({ baseURL: import.meta.env.VITE_API_BASE_URL ?? '/api' });
 
 
