@@ -1,9 +1,19 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 import type { CreateToDoItemRequest, ToDoItem, UpdateToDoItemRequest } from "../types/toDoItem";
 import { getAll, create, update, remove } from "../services/toDoItemService";
 
+function toFriendlyError(err: unknown): Error {
+    if (axios.isAxiosError(err) && err.response?.status === 503) {
+        return new Error("Il server si sta riattivando dopo un periodo di inattività: riprova tra qualche secondo.");
+    }
+    return err instanceof Error ? err : new Error("Si è verificato un errore imprevisto.");
+}
+
 function useToDoItems() {
     const [toDoItems, setToDoItems] = useState<ToDoItem[]>([]);
+    // True solo durante il primo caricamento (soggetto al cold start del DB); le azioni CRUD usano isLoading.
+    const [isInitialLoading, setIsInitialLoading] = useState<boolean>(true);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<Error | null>(null);
 
@@ -11,8 +21,9 @@ function useToDoItems() {
         setIsLoading(true);
         try {
             await operation();
+            setError(null);
         } catch (err) {
-            if (err instanceof Error) setError(err);
+            setError(toFriendlyError(err));
         }
         setIsLoading(false);
     }
@@ -20,7 +31,7 @@ function useToDoItems() {
     useEffect(() => {
         withLoadingAndError(async () => {
             setToDoItems(await getAll());
-        });
+        }).finally(() => setIsInitialLoading(false));
     }, []);
 
     async function handleCreate(item: CreateToDoItemRequest) {
@@ -44,7 +55,7 @@ function useToDoItems() {
         });
     }
 
-    return { toDoItems, isLoading, error, handleCreate, handleUpdate, handleRemove };
+    return { toDoItems, isInitialLoading, isLoading, error, handleCreate, handleUpdate, handleRemove };
 }
 
 export { useToDoItems };
