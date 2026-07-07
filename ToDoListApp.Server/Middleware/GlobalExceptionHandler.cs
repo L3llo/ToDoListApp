@@ -14,6 +14,8 @@ namespace ToDoListApp.Server.Middleware
             var (statusCode, title) = exception switch
             {
                 NotFoundException => (StatusCodes.Status404NotFound, exception.Message),
+                // Azure SQL free tier auto-pauses when idle; EF Core exhausts its retries while the DB
+                // resumes from a cold start. Surface this as a transient 503 instead of a generic 500.
                 Microsoft.EntityFrameworkCore.Storage.RetryLimitExceededException =>
                     (StatusCodes.Status503ServiceUnavailable, "Re-activating database; please retry in a while."),
                 _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")

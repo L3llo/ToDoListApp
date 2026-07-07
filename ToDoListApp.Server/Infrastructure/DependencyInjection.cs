@@ -17,6 +17,9 @@ namespace ToDoListApp.Server.Infrastructure
             {
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
 
+                // Same retry/timeout tuning in both branches, but UseAzureSql (vs. UseSqlServer) is required
+                // in production because the free-tier Azure SQL instance auto-pauses when idle and can take
+                // up to ~30s to resume; the generous retry count/delay ride out that cold start.
                 if (environment.IsDevelopment())
                 {
                     options.UseSqlServer(connectionString, sqlOptions =>
