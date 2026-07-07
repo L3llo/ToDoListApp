@@ -18,9 +18,27 @@ namespace ToDoListApp.Server.Infrastructure
                 var connectionString = configuration.GetConnectionString("DefaultConnection");
 
                 if (environment.IsDevelopment())
-                    options.UseSqlServer(connectionString);
+                {
+                    options.UseSqlServer(connectionString, sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 10,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
+                        sqlOptions.CommandTimeout(60);
+                    });
+                }
                 else
-                    options.UseAzureSql(connectionString);
+                {
+                    options.UseAzureSql(connectionString, sqlOptions =>
+                    {
+                        sqlOptions.EnableRetryOnFailure(
+                            maxRetryCount: 10,
+                            maxRetryDelay: TimeSpan.FromSeconds(30),
+                            errorNumbersToAdd: null);
+                        sqlOptions.CommandTimeout(60);
+                    });
+                }
             });
 
             services.AddScoped<IToDoItemRepository, ToDoItemRepository>();

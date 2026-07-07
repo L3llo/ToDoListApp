@@ -14,6 +14,8 @@ namespace ToDoListApp.Server.Middleware
             var (statusCode, title) = exception switch
             {
                 NotFoundException => (StatusCodes.Status404NotFound, exception.Message),
+                Microsoft.EntityFrameworkCore.Storage.RetryLimitExceededException =>
+                    (StatusCodes.Status503ServiceUnavailable, "Re-activating database; please retry in a while."),
                 _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
             };
 
