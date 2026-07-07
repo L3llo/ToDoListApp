@@ -31,12 +31,16 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      - name: Build (generates openapi.json)
+      - name: Build
+        working-directory: ToDoListApp.Server
+        run: dotnet build --configuration Release
+
+      - name: Generate openapi.json
         working-directory: ToDoListApp.Server
         env:
           ASPNETCORE_ENVIRONMENT: Development
           ConnectionStrings__DefaultConnection: "Server=localhost;Database=dummy;Trusted_Connection=True;"
-        run: dotnet build --configuration Release
+        run: dotnet build --configuration Release -t:GenerateOpenApiDocuments
 
       - name: Prepare site
         run: |

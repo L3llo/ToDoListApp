@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToDoListApp API</title>
+    <style>
+        :root {
+            --text: #6b6375;
+            --text-h: #08060d;
+            --bg: #fff;
+            --border: #e5e4e7;
+            --code-bg: #f4f3ec;
+            --accent: #1a73e8;
+            --accent-bg: rgba(26, 115, 232, 0.1);
+            --shadow:
+                rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+            --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text: #9ca3af;
+                --text-h: #f3f4f6;
+                --bg: #16171d;
+                --border: #2e303a;
+                --code-bg: #1f2028;
+                --accent: #1a73e8;
+                --accent-bg: rgba(26, 115, 232, 0.15);
+                --shadow:
+                    rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+            }
+        }
+
+        body {
+            font-family: var(--sans);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .card {
+            text-align: center;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--code-bg);
+            box-shadow: var(--shadow);
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            font-size: .9rem;
+            color: var(--accent);
+            background: var(--accent-bg);
+            border-radius: 999px;
+            padding: .25rem .75rem;
+            margin-bottom: 1rem;
+        }
+
+        .status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+        }
+
+        h1 {
+            margin: 0 0 .5rem;
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text-h);
+        }
+
+        p {
+            margin: 0;
+            font-size: .9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="status">Online</div>
+        <h1>ToDoListApp API</h1>
+        <p>Service is up and running</p>
+    </div>
+</body>
+</html>

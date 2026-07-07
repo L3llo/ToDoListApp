@@ -45,7 +45,8 @@ if (app.Environment.IsProduction())
 {
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await db.Database.MigrateAsync();
+    var strategy = db.Database.CreateExecutionStrategy();
+    await strategy.ExecuteAsync(() => db.Database.MigrateAsync());
 }
 
 app.UseHttpsRedirection();
