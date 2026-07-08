@@ -20,9 +20,6 @@ jobs:
             
             - name: Publish
               working-directory: ToDoListApp.Server
-              env:
-                ASPNETCORE_ENVIRONMENT: Development
-                ConnectionStrings__DefaultConnection: "Server=localhost;Database=dummy;Trusted_Connection=True;"
               run: dotnet publish --configuration Release --output ./publish
             
             - name: Deploy
@@ -31,5 +28,3 @@ jobs:
                 app-name: 'app-todolistapp-prod'
                 publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
                 package: ./ToDoListApp.Server/publish
-
-    
